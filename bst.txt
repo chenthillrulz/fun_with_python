@@ -1,0 +1,12 @@
+@startuml
+digraph binary_search_tree {
+	5 -> 3 [label=L]
+	5 -> 8 [label=R]
+	3 -> 2 [label=L]
+	3 -> 4 [label=R]
+	2 -> 1 [label=L]
+	8 -> 7 [label=L]
+	8 -> 9 [label=R]
+	7 -> 6 [label=L]
+	9 -> 10 [label=R]
+}
