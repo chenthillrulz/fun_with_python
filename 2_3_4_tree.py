@@ -20,10 +20,12 @@ class Node:
 
 
     def add_children(self, node):
+        if len(self.children) > self.max_children:
+            print ("Cannot to add more children")
+            return
+
         self.children.append(node)
         self.children.sort(key = last_key)
-
-        return True
 
     def is_leaf(self):
         if len(self.children) == 0:
@@ -32,7 +34,7 @@ class Node:
             return False
 
     def split_node (node):
-        if len(node.keys) != 3:
+        if len(node.keys) <= node.max_keys:
             print("unable to split the node, node len is " + str(len(node.keys)))
             return False
 
@@ -96,6 +98,7 @@ insert(root, 6)
 insert(root, 7)
 insert(root, 8)
 insert(root, 9)
+insert(root, 10)
 
 fo = open("/home/pchenthill/sources/fun_with_python/2_3_4_tree.dot", "w")
 fo.write("digraph g {\n")
