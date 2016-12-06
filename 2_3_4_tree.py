@@ -1,27 +1,24 @@
 #!/bin/python
 
 
-class Node (self):
-    def __init__(data, parent):
+class Node:
+    def __init__(self, data, parent):
         self.parent = parent
         self.keys = [data]
-        self.max_keys = 3
-        self.max_children = 4
+        self.max_keys = 2
+        self.max_children = 3
         self.children = []
 
     def get_keys_len(self):
         return len(self.keys)
 
     def add_key(self, key):
-        if get_keys_len() >= 3:
-            return False
-
         self.keys.append(key)
         self.keys.sort()
-        return True
+
 
     def add_children(self, node):
-        if  len(self.children) >= 4:
+        if  len(self.children) >= self.max_children:
             return False
 
         self.children.append(node)
@@ -30,30 +27,70 @@ class Node (self):
         return True
 
     def split_node (node):
-        if get_keys_len(self) != 3:
+        if get_keys_len(node) != 3:
+            print("unable to split the node, node len is " + str(get_keys_len(node)))
             return False
 
         parent_key = node.keys[1]
-
+        
+        #Move the center key to parent
         parent = node.parent
         if node.parent == None:
+            # reset root node after a recursive split 
+            global root
             parent = Node(parent_key, None)
+            root = parent
         else:
             parent.add_key(parent_key)
 
-        left_node = Node(node.keys(0), parent)
+        # split current node into left(removing the middle/right key from cur node) and right node
         right_node = Node(node.keys(2), parent)
+        del node.keys[1]
+        del node.keys[2]
+        # add right_node to parent's children
+        parent.add_children (right_node)
 
+        # if parents key becomes larger recursively split
+        if len(parent.keys) > max_keys:
+            Node.split_node(parent)
 
         return True
 
-fo = open("/home/pchenthill/practice/bst.txt", "w")
+    def is_leaf(self):
+        if len(self.keys) == 0:
+            return True
+        else:
+            return False
+
+def find_leaf(node, key):
+    if node == None:
+        return None
+
+    if node.is_leaf():
+        return node
+    node_index = 0
+    for i, k in enumerate(node.keys):
+        if key > k:
+            node_index += 1
+        else:
+            break
+    child = node.children[node_index]
+
+    return find_leaf(child)
+
+def insert(root, key):
+    leaf = find_leaf (root, key)
+    leaf.add_key(key)
+    return leaf
+
+
+root = Node(2, None)
+fo = open("/home/pchenthill/sources/fun_with_python/2_3_4_tree.txt", "w")
 fo.write("@startuml\n")
 fo.write("digraph 2_3_4_tree {\n")
 fo.write("node [shape = record,height=.1];")
 
 node_count = 0
-
 def make_graph (node, parent_label):
     if node == None:
         return
@@ -67,15 +104,17 @@ def make_graph (node, parent_label):
         string += "|" +  str(key) +  "|" + "<f" + str (i) + ">"
         i = i + 1
     string += "];"
+    fo.write(string)
 
     if node.parent != None:
         conn = "\"" + parent_label + "->" + cur_node_name
+        fo.write(conn)
 
     node_count += 1
-    for i, child in enumerate(node.children)
+    for i,child in enumerate(node.children):
         make_graph (child, "\"" + cur_node_name +  "\":f" + str(i))
 
-make_graph (root)
+make_graph (root, "")
 fo.write("}\n")
 
 fo.close()
